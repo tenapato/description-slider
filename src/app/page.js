@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import DescriptionSlider from './components/slider';
 import ResultsPopup from './components/resultsPopup';
+import WarningPopup from './components/WarningPopup';
 
 // Read the descriptions from descriptions.json
 import descriptions from './descriptions.json';
@@ -9,32 +10,42 @@ import descriptions from './descriptions.json';
 const Index = () => {
   const [answers, setAnswers] = useState({});
   const [categoryTotalRatings, setCategoryTotalRatings] = useState({});
-  const [showPopup, setShowPopup] = useState(false);
+  const [showResultsPopup, setShowResultsPopup] = useState(false);
+  const [showWarningPopup, setShowWarningPopup] = useState(false);
 
   const handleSliderChange = (category, description, value) => {
     const updatedAnswers = { ...answers, [description]: value };
     setAnswers(updatedAnswers);
 
-    // Calculate the total rating for the category
     const categoryRatings = descriptions
       .filter((desc) => desc.Category === category)
       .map((desc) => updatedAnswers[desc.Description] || 0);
 
     const categoryTotalRating = categoryRatings.reduce((acc, curr) => acc + curr, 0);
 
-    // Update the category total rating in state
     setCategoryTotalRatings((prevCategoryTotalRatings) => ({
       ...prevCategoryTotalRatings,
       [category]: categoryTotalRating,
     }));
   };
 
-  const handleShowPopup = () => {
-    setShowPopup(true);
+  const handleShowResultsPopup = () => {
+    const isAllAnswered = descriptions.every((item) => answers[item.Description] !== undefined);
+
+    if (isAllAnswered) {
+      setShowResultsPopup(true);
+      setShowWarningPopup(false); // Close the warning popup if it's open
+    } else {
+      setShowWarningPopup(true);
+    }
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
+  const handleCloseResultsPopup = () => {
+    setShowResultsPopup(false);
+  };
+
+  const handleCloseWarningPopup = () => {
+    setShowWarningPopup(false);
   };
 
   return (
@@ -52,19 +63,25 @@ const Index = () => {
 
       <div className="mt-4">
         <button
-          onClick={handleShowPopup}
+          onClick={handleShowResultsPopup}
           className="bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer"
         >
           Show Results
         </button>
       </div>
 
-      {showPopup && (
+      {showResultsPopup && (
         <div className="fixed top-0 left-0 flex items-center justify-center w-screen h-screen bg-black bg-opacity-30">
           <ResultsPopup
             categoryTotalRatings={categoryTotalRatings}
-            onClose={handleClosePopup}
+            onClose={handleCloseResultsPopup}
           />
+        </div>
+      )}
+
+      {showWarningPopup && (
+        <div className="fixed top-0 left-0 flex items-center justify-center w-screen h-screen bg-black bg-opacity-30">
+          <WarningPopup onClose={handleCloseWarningPopup} />
         </div>
       )}
     </div>
