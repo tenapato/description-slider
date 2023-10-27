@@ -10,7 +10,7 @@ const WarningPopup = ({ onClose }) => {
         Close
       </button>
       <p className="text-lg font-semibold">Warning:</p>
-      <p className="mt-2">Please answer all sliders to see the results.</p>
+      <p className="mt-2">Please answer all questions to see the results.</p>
     </div>
   );
 };
