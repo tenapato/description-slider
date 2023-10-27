@@ -50,7 +50,7 @@ const Index = () => {
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-semibold mb-4">Rate Each Description</h1>
+      <h1 className="text-2xl font-semibold mb-4"> Assessment de liderazgo</h1>
       {descriptions.map((item, index) => (
         <div key={index} className="mb-4 p-4">
           <DescriptionSlider
